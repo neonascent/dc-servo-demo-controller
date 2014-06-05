@@ -12,7 +12,7 @@ bool buttonPressed = false;
 
 bool actionBlip = false;
 
-String names[numberOfModes] = {"Idle", "Relative Move", "Absolute Move", "Input Follower"};
+String names[numberOfModes] = {"Bluetooth Listener", "Relative Move", "Absolute Move", "Input Follower"};
 int parameters[numberOfModes] = {0, 1000, 1000, 1};
 int parametersMin[numberOfModes] = {0, 100, 100, 1};
 int parametersMax[numberOfModes] = {0, 2000, 2000, 10};
@@ -49,9 +49,9 @@ void initialize() {
 void loop() {
 
   if (mode ==  0) {
-    idle();  
+    bluetooth();
   }
-  
+
   // move relative
   if (mode == 1) {
     relative(parameters[mode]);
@@ -89,7 +89,7 @@ bool checkInput() {
     }
     else if (x < 800) {
       initialize();
-    } 
+    }
   } else {
     if (x > 1000) {
       buttonPressed = false;
@@ -119,8 +119,28 @@ void relative(int delayTime) {
   responsiveDelay(delayTime);
 }
 
-void idle() {
- responsiveDelay(100); 
+void bluetooth() {
+  String readString;
+  while (1) {
+    while (Serial.available()) {
+      delay(3);  //delay to allow buffer to fill
+      if (Serial.available() > 0) {
+        char c = Serial.read();  //gets one byte from serial buffer
+        readString += c; //makes the string readString
+      }
+    }
+
+    if (readString.length() > 0) {
+      out(readString);
+    }
+
+    if (checkInput()) {
+      setTitle(names[mode]);
+      setParameter((String)parameters[mode]);
+      break;
+    }
+
+  }
 }
 
 void follow(int scale) {
@@ -165,6 +185,7 @@ void responsiveDelay(int time) {
     if (checkInput()) {
       setTitle(names[mode]);
       setParameter((String)parameters[mode]);
+      break;
     }
     delay(20);
   }
