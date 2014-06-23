@@ -89,12 +89,14 @@ bool checkInput() {
     }
     else if (x < 800) {
       initialize();
+    } else {
+      return false; 
     }
   } else {
     if (x > 1000) {
       buttonPressed = false;
-      return false;
     }
+    return false;
   }
 
   buttonPressed = true;

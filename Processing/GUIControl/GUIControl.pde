@@ -27,9 +27,10 @@ void setup() {
   size(500, 300);
   smooth();
   noStroke();
-
-  //String portName = Serial.list()[0];
-  String portName = "COM18";
+  
+  //println(Serial.list());
+ // String portName = Serial.list()[0];
+  String portName = "COM4";
   myPort = new Serial(this, portName, 9600);
 
   cp5 = new ControlP5(this);
